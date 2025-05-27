@@ -168,5 +168,5 @@ To run the project locally or customize it:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/paper-price-calculator.git
+git clone https://github.com/Boda1607/paper-price-calculator.git
 cd paper-price-calculator
