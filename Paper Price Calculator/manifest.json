@@ -1,0 +1,15 @@
+{
+  "name": "Paper Calculator",
+  "short_name": "PaperCalc",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#10191f",
+  "theme_color": "#10191f",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

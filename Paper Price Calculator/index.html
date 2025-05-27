@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paper Price Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="icon" href="icon.png" type="image/png" />
+
+  
+  <link rel="manifest" href="/manifest.json">
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="/icon.png">
+  <!-- Enable standalone full-screen mode on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!-- Set the app title when added to home screen -->
+  <meta name="apple-mobile-web-app-title" content="MyAppName">
+  <!-- Set status bar color -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <style>
+    :root {
+      --bg-color: #0f1e25;
+      --sidebar-bg: #1b2b34;
+      --circle-bg: #0d1c23;
+      --text-color: white;
+      --hover-bg: #10191f;
+      --switch-bg: #ccc;
+      --switch-active-bg: #f5c518;
+      --switch-thumb-bg: #fff;
+      --switch-thumb-active-bg: #f1f1f1;
+    }
+
+    .light {
+      --bg-color: #f5f5f5;
+      --sidebar-bg: #e0e0e0;
+      --circle-bg: #ccc;
+      --text-color: #111;
+      --hover-bg: #ddd;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+      flex-direction: column;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 60px;  /* Sidebar initially has a width of 60px */
+      background: var(--sidebar-bg);  /* Background color set using a CSS variable */
+      transition: width 0.3s ease;  /* Smooth transition effect when the width changes */
+      overflow: hidden;  /* Any content that overflows the sidebar will be hidden */
+      display: flex;  /* Using Flexbox to layout the children of the sidebar */
+      flex-direction: column;  /* Stack the items in the sidebar vertically */
+      align-items: center;  /* Center the items horizontally */
+      padding-top: 20px;  /* Add some padding at the top of the sidebar */
+      position: relative;  /* Positioning context for the children, if needed */
+    }
+    
+    .sidebar.expanded {
+      width: 160px;  /* When the sidebar is expanded, it will have a width of 170px */
+      align-items: flex-start;  /* Align the items to the start of the sidebar (left for LTR languages) */
+    }
+
+    .menu-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 22px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      align-self: center;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-content {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    .menu-content li {
+      width: 100%;
+    }
+
+    .menu-content a {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      color: var(--text-color);
+      text-decoration: none;
+      border-radius: 30px;
+      margin: 8px 0;
+      transition: background 0.3s ease;
+    }
+
+    .menu-content a:hover,
+    .menu-content a.active {
+      background-color: var(--circle-bg);
+    }
+
+    .icon-container {
+      background-color: var(--circle-bg);
+      padding: 10px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 40px;
+    }
+
+    .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    .menu-content span.label {
+      margin-left: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .sidebar.expanded .menu-content span.label {
+      opacity: 1;
+    }
+
+    .content {
+      display: none;
+      padding: 10px;
+      flex: 1;
+      transition: margin-left 0.3s ease; /* Smooth transition for adjusting the content */
+    }
+
+    .content.active {
+      display: block;
+    }
+    .content.flexible {
+      margin-left: 60px; /* Offset content for collapsed sidebar */
+    }
+    .sidebar.expanded + .content.flexible {
+      margin-left: 150px; /* Offset content for expanded sidebar */
+    }
+
+    .theme-toggle {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .switch {
+      width: 60px;
+      height: 30px;
+      background-color: var(--circle-bg);
+      border-radius: 50px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      transition: background 0.3s ease;
+    }
+
+    .switch .icon {
+      color: var(--text-color);
+      font-size: 14px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .switch-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      z-index: 0;
+    }
+
+   /* Shared content section style */
+    #paper-pricePage,
+    #base-sheetPage,
+    #multi-itemPage {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--bg-color);
+    }
+
+    /* Headings */
+    #paper-pricePage h1,
+    #base-sheetPage h1,
+    #multi-itemPage h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+    }
+
+    /* Labels and form groups */
+    #paper-pricePage label,
+    #base-sheetPage label,
+    #multi-itemPage label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    }
+
+    #paper-pricePage input,
+    #base-sheetPage input,
+    #multi-itemPage input {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--circle-bg);
+    border-radius: 8px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    width: 100%;
+    margin-bottom: 15px;
+    }
+
+    #paper-pricePage input:focus,
+    #base-sheetPage input:focus,
+    #multi-itemPage input:focus {
+    border-color: var(--switch-active-bg);
+    outline: none;
+    }
+
+    /* Button styling */
+    #paper-pricePage button,
+    #base-sheetPage button,
+    #multi-itemPage button {
+    background-color: var(--switch-active-bg);
+    color: var(--bg-color);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 15px auto;
+    }
+
+    #paper-pricePage button:hover,
+    #base-sheetPage button:hover,
+    #multi-itemPage button:hover {
+    background-color: #e6b200;
+    }
+
+    /* Result containers */
+    #result,
+    #baseResult,
+    #multiResult {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--circle-bg);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--text-color);
+    }
+
+    /* Multi-item list */
+    #multiItems {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--circle-bg);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-color);
+    }
+
+    #multiItems ul {
+    list-style-type: none;
+    padding: 0;
+    }
+
+    #multiItems li {
+    margin: 5px 0;
+    padding: 5px;
+    background-color: var(--sidebar-bg);
+    border-radius: 5px;
+    }
+
+    #multiItems li span {
+    font-weight: bold;
+    }
+
+    .section-box {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--sidebar-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, color 0.3s ease;
+    }
+      
+    .section-box h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+    }
+      
+    .section-box label {
+    font-weight: bold;
+    margin: 10px 0 6px;
+    color: var(--text-color);
+    display: block;
+    }
+      
+    .section-box input,
+    .section-box textarea {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--circle-bg);
+    border-radius: 8px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    width: 100%;
+    margin-bottom: 15px;
+    }
+      
+    .section-box input:focus,
+    .section-box textarea:focus {
+    border-color: var(--switch-active-bg);
+    outline: none;
+    }
+      
+    .section-box button {
+    background-color: var(--switch-active-bg);
+    color: var(--bg-color);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 15px auto;
+    }
+      
+    .section-box button:hover {
+    background-color: #e6b200;
+    }
+      
+    .section-box .result-box {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--circle-bg);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--text-color);
+    }
+      
+
+    @media (max-width: 300px) {
+      .sidebar {
+        width: 0;
+        display: none;
+      }
+
+      .sidebar.active {
+        display: flex;
+        width: 100px;
+      }
+
+      .main-container {
+        flex-direction: column;
+      }
+
+      .menu-content a {
+        font-size: 10px;
+        padding: 10px;
+      }
+
+      .theme-toggle button {
+        padding: 8px 16px;
+      }
+    }
+  </style>
+
+</head>
+<body>
+  <div class="main-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <!-- Toggle Button -->
+      <button class="menu-toggle-btn" id="toggleSidebarBtn">☰</button>
+
+      <ul class="menu-content">
+        <li><a href="#paper-price" class="nav-btn" data-page="paper-price"><span class="icon-container"><i class="fa-solid fa-file-invoice-dollar"></i></span><span class="label">Paper Price</span></a></li>
+        <li><a href="#base-sheet" class="nav-btn" data-page="base-sheet"><span class="icon-container"><span class="material-symbols-outlined">table_chart</span></span><span class="label">Base Sheet</span></a></li>
+        <li><a href="#multi-item" class="nav-btn" data-page="multi-item"><span class="icon-container"><span class="material-symbols-outlined">view_comfy</span></span><span class="label">Multi-item</span></a></li>
+        <li><a href="#theme" class="nav-btn" data-page="theme"><span class="icon-container"><i class="fa-solid fa-cloud-moon"></i></span><span class="label">Theme</span></a></li>
+        <li><a href="#settings" class="nav-btn" data-page="settings"><span class="icon-container"><span class="material-symbols-outlined">settings</span></span><span class="label">Settings</span></a></li>
+        <li><a href="#contact" class="nav-btn" data-page="contact"><span class="icon-container"><span class="material-symbols-outlined">mail</span></span><span class="label">Contact</span></a></li>
+        <li><a href="#download" class="nav-btn" data-page="download"><span class="icon-container"><span class="material-symbols-outlined">download</span></span><span class="label">Download</span></a></li>
+      </ul>
+    </div>
+
+    <!--------------------------------------------------------------- Paper Price ----------------------------------------------------------->
+
+    <div class="content" id="paper-pricePage">
+        <div class="section-box">
+        <h1>Paper Price</h1>
+        <label for="width">Width (cm):</label>
+        <input type="number" id="width" placeholder="e.g. 20" />
+    
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" placeholder="e.g. 30" />
+    
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" placeholder="e.g. 1" />
+    
+        <button onclick="calculate()">Calculate</button>
+    
+        <div id="result" class="result-box"></div>
+        <!-- Print Invoice Button -->
+        <button id="printInvoiceBtn" onclick="exportPaperPriceToPDF()">Print Invoice</button>
+
+      </div>
+    </div>
+    
+    <!--------------------------------------------------------------- Base Sheet Page ----------------------------------------------------->
+    <div class="content" id="base-sheetPage">
+        <div class="section-box">
+        <h1>Base Sheet</h1>
+        <label for="baseWidth">Base Sheet Width (cm):</label>
+        <input type="number" id="baseWidth" placeholder="e.g. 20" />
+    
+        <label for="baseHeight">Base Sheet Height (cm):</label>
+        <input type="number" id="baseHeight" placeholder="e.g. 30" />
+    
+        <label for="gutter">Space/Gutter (cm):</label>
+        <input type="number" id="gutter" placeholder="e.g. 0.2" step="0.1" />
+    
+        <label for="pieceWidth">Piece Width (cm):</label>
+        <input type="number" id="pieceWidth" placeholder="e.g. 2" />
+    
+        <label for="pieceHeight">Piece Height (cm):</label>
+        <input type="number" id="pieceHeight" placeholder="e.g. 3" />
+    
+        <button onclick="baseSheetCalculation()">Calculate Base Sheet</button>
+    
+        <div id="baseResult" class="result-box"></div>
+
+        <!-- Print Invoice Button -->
+        <button id="printInvoiceBtn" onclick="exportPaperPriceToPDF()">Print Invoice</button>
+        </div>
+    </div>
+    
+    <!---------------------------------------------------------------------- Multi-item Page ------------------------------------------>
+    <div class="content" id="multi-itemPage">
+      <div class="section-box">
+        <h1>Multi-item</h1>
+        <label for="multiWidth">Width (cm):</label>
+        <input type="number" id="multiWidth" placeholder="e.g. 20"/>
+    
+        <label for="multiHeight">Height (cm):</label>
+        <input type="number" id="multiHeight" placeholder="e.g. 30"/>
+    
+        <label for="multiQuantity">Quantity:</label>
+        <input type="number" id="multiQuantity" placeholder="e.g. 2"/>
+    
+        <button onclick="addMultiItem()">Add to List</button>
+    
+        <div id="multiItems" class="result-box"></div>
+        <button onclick="calculateMultiItems()">Calculate Total Price</button>
+    
+        <div id="multiResult" class="result-box"></div>
+
+        <!-- Print Invoice Button -->
+        <button id="printInvoiceBtn" onclick="exportPaperPriceToPDF()">Print Invoice</button>
+      </div>
+    </div>
+    
+    <!----------------------------------------------------------------------- Theme Page ----------------------------------------------------------------------------------->
+    <div class="content" id="themePage">
+      <div class="section-box">
+        <h1>Theme</h1>
+        <div class="theme-toggle" style="gap: 30px;">
+            <h2>Theme</h2>
+            <div class="switch" id="themeSwitch">
+            <span class="icon sun fas fa-sun"></span>
+            <span class="icon moon fas fa-moon"></span>
+            <div class="switch-thumb"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+    
+    <!---------------------------------------------------------------- Settings Page -------------------------------------------------------------------------->
+      <div class="content" id="settingsPage">
+        <div class="section-box">
+          <h1>Settings</h1>
+          <label for="refWidth">Reference Width (cm):</label>
+          <input type="number" id="refWidth" placeholder="e.g. 20" oninput="updatePriceInfo()" />
+
+          <label for="refHeight">Reference Height (cm):</label>
+          <input type="number" id="refHeight" placeholder="e.g. 30" oninput="updatePriceInfo()" />
+
+          <label for="refPrice">Reference Price (EGP):</label>
+          <input type="number" id="refPrice" placeholder="e.g. 80" oninput="updatePriceInfo()" />
+
+          <button onclick="calculatePricePerCm()">Set New Price</button>
+      
+          <div id="settingsResult" class="result-box"></div>
+        </div>
+      </div>
+      
+    <!--------------------------------------------------------------- Contact -----------------------------------------------------------> 
+    <div class="content" id="contactPage">
+        <!-- Service Card for the Contact Form -->
+        <div class="service-card">
+           <h2>Content</h2>
+          <h2><i class="fas fa-envelope"></i> Direct Email</h2>
+          <form action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" name="access_key" value="5e69601a-c30b-4059-bf9c-c9cba95f97ec">
+      
+            <div class="form-group">
+              <label for="name" data-translate="fullNameLabel">Full Name</label>
+              <input type="text" id="name" name="name" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+              <label for="email" data-translate="emailLabel">Email</label>
+              <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+              <label for="phone" data-translate="phoneLabel">Phone Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+            </div>
+            <div class="form-group">
+              <label for="subject" data-translate="subjectLabel">Subject</label>
+              <input type="text" id="subject" name="subject" placeholder="Subject" required>
+            </div>
+            <div class="form-group">
+              <label for="message" data-translate="messageLabel">Your Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="btn" data-translate="submitBtn">Send Message</button>
+          </form>
+        </div>
+      
+        <style>
+          #contactPage {
+            max-width: 800px;
+            margin: 0 auto;
+          }
+      
+          #contactPage .service-card {
+            background: var(--sidebar-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, color 0.3s ease;
+          }
+      
+          #contactPage h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+          }
+      
+          #contactPage .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+          }
+      
+          #contactPage label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: var(--text-color);
+          }
+      
+          #contactPage input,
+          #contactPage textarea {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid var(--circle-bg);
+            border-radius: 8px;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+          }
+      
+          #contactPage input:focus,
+          #contactPage textarea:focus {
+            border-color: var(--switch-active-bg);
+            outline: none;
+          }
+      
+          #contactPage .btn {
+            background-color: var(--switch-active-bg);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+      
+          #contactPage .btn:hover {
+            background-color: #e6b200;
+          }
+      
+          @media (max-width: 300px) {
+            #contactPage {
+              padding: 20px;
+            }
+      
+            #contactPage h2 {
+              font-size: 1.2rem;
+            }
+          }
+          .sidebar {
+            flex: 0 0 auto; /* Sidebar takes its default width */
+            transition: width 0.3s ease; /* Smooth transition for expanding */
+          }
+        </style>
+      
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("#contactPage form");
+            form.addEventListener("submit", function () {
+              setTimeout(() => {
+                form.reset();
+              }, 1000);
+            });
+          });
+        </script>
+      </div>
+  <!--------------------------------------------------------------- Download -----------------------------------------------------------> 
+    <div class="content" id="downloadPage">
+      <div class="section-box">
+        <h1>Download</h1>
+        <h3>Steps to Download App</h3>
+        <div class="theme-toggle" style="gap: 30px;">
+          <p>
+            To Download the app on iOS device, open Safari, click on 
+            <i class="fa-solid fa-arrow-up-from-bracket" style="margin: 0 4px;"></i> 
+            and then <strong>Add to Home Screen</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  <!--------------------------------------------------------------- JavaScript ------------------------------------------------------------->
+  <script>
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.content');
+    const themeSwitch = document.getElementById('themeSwitch');
+    const sidebar = document.getElementById('sidebar');
+    const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+
+    function activatePage(pageId) {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      pages.forEach(page => page.classList.remove('active'));
+
+      const btn = document.querySelector(`.nav-btn[data-page="${pageId}"]`);
+      const page = document.getElementById(`${pageId}Page`);
+      if (btn) btn.classList.add('active');
+      if (page) page.classList.add('active');
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetPage = btn.dataset.page;
+        activatePage(targetPage);
+      });
+    });
+
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.substring(1);
+      activatePage(hash);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const initialPage = window.location.hash.substring(1) || 'paper-price';
+      activatePage(initialPage);
+    });
+
+    themeSwitch.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+    });
+
+    toggleSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('expanded');
+    });
+
+
+    function updatePriceInfo() {
+    const refWidth = parseFloat(document.getElementById('refWidth').value);
+    const refHeight = parseFloat(document.getElementById('refHeight').value);
+    const refPrice = parseFloat(document.getElementById('refPrice').value);
+
+    if (isNaN(refWidth) || isNaN(refHeight) || isNaN(refPrice)) {
+      document.getElementById('settingsResult').innerText = "Please enter valid numbers.";
+      return;
+    }
+
+    // Calculate price per cm²
+    const pricePerCm2 = refPrice / (refWidth * refHeight);
+
+    // Save to localStorage
+    localStorage.setItem('pricePerCm2', pricePerCm2);
+    localStorage.setItem('refWidth', refWidth);
+    localStorage.setItem('refHeight', refHeight);
+    localStorage.setItem('refPrice', refPrice);
+
+    // Display the results
+    document.getElementById('settingsResult').innerHTML = `
+      <strong>New Price per cm²</strong>: EGP ${pricePerCm2.toFixed(4)}<br>
+      <strong>Width</strong>: ${refWidth} cm<br>
+      <strong>Height</strong>: ${refHeight} cm<br>
+      <strong>Total Price</strong>: EGP ${refPrice.toFixed(2)}
+    `;
+  }
+
+
+    // -----------------------------------------------------------------------------------------------
+
+
+    let pricePerCm2 = 80 / 600; // Default
+
+    // ✅ Load stored price if available
+    const storedPrice = localStorage.getItem('pricePerCm2');
+    if (storedPrice) {
+        pricePerCm2 = parseFloat(storedPrice);
+    }
+
+
+    // Show the selected feature
+    function showFeature(feature) {
+      const features = document.querySelectorAll('.feature');
+      features.forEach(f => f.style.display = 'none');
+      document.getElementById(feature).style.display = 'block';
+    }
+
+    // Calculate paper price
+    function calculate() {
+      const width = parseFloat(document.getElementById('width').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      if (isNaN(width) || isNaN(height) || isNaN(quantity)) {
+        document.getElementById('result').innerText = "Please enter valid numbers.";
+        return;
+      }
+
+      const area = width * height;
+      const totalArea = area * quantity;
+      const totalPrice = (totalArea * pricePerCm2).toFixed(2);
+
+      document.getElementById('result').innerText = 
+        `Total area: ${totalArea} cm², Total price: ${totalPrice} EGP `;
+    }
+
+    // Base sheet calculation
+    function baseSheetCalculation() {
+        const baseWidth = parseFloat(document.getElementById('baseWidth').value);
+        const baseHeight = parseFloat(document.getElementById('baseHeight').value);
+        let gutter = parseFloat(document.getElementById('gutter').value);
+        const pieceWidth = parseFloat(document.getElementById('pieceWidth').value);
+        const pieceHeight = parseFloat(document.getElementById('pieceHeight').value);
+      
+        if (isNaN(baseWidth) || isNaN(baseHeight) || isNaN(gutter) ||
+            isNaN(pieceWidth) || isNaN(pieceHeight)) {
+          document.getElementById('baseResult').innerText = "Please enter valid numbers.";
+          return;
+        }
+      
+        // Ensure gutter is at least 0.2
+        if (gutter < 0.2) gutter = 0.2;
+      
+        // Calculate how many pieces fit
+        const piecesPerRow = Math.floor((baseWidth + gutter) / (pieceWidth + gutter));
+        const piecesPerCol = Math.floor((baseHeight + gutter) / (pieceHeight + gutter));
+        const totalItems = piecesPerRow * piecesPerCol;
+      
+        // Gutter spacing totals
+        const gutterWidthTotal = (piecesPerRow - 1) * gutter + 0.508;
+        const gutterHeightTotal = (piecesPerCol - 1) * gutter + 0.508;
+      
+        // Actual used area
+        const usedWidth = piecesPerRow * pieceWidth + gutterWidthTotal;
+        const usedHeight = piecesPerCol * pieceHeight + gutterHeightTotal;
+        const usedArea = usedWidth * usedHeight;
+      
+        const baseArea = baseWidth * baseHeight;
+        const wasteArea = baseArea - usedArea;
+      
+        // Price calculation
+        const totalPrice = pricePerCm2 ? (usedArea * pricePerCm2).toFixed(2) : "N/A";
+      
+        document.getElementById('baseResult').innerText =
+          `Rows: ${piecesPerCol}, Columns: ${piecesPerRow}
+      Total Items: ${totalItems}
+      Used Area: ${usedArea.toFixed(2)} cm²
+      Waste Area: ${wasteArea.toFixed(2)} cm²
+      Total Price: ${pricePerCm2 ? `EGP ${totalPrice}` : 'Set reference price first'}`;
+      }
+      
+
+
+    // Multi-item Calculator
+    let multiItems = [];
+    function addMultiItem() {
+      const width = parseFloat(document.getElementById('multiWidth').value);
+      const height = parseFloat(document.getElementById('multiHeight').value);
+      const quantity = parseInt(document.getElementById('multiQuantity').value);
+
+      if (isNaN(width) || isNaN(height) || isNaN(quantity)) {
+        alert("Please enter valid values.");
+        return;
+      }
+
+      // Calculate area and total price
+      const area = width * height;
+      const totalPrice = area * quantity * pricePerCm2;
+
+      // Add to the multiItems array
+      multiItems.push({ width, height, quantity, totalPrice });
+
+      // Render the list with prices
+      document.getElementById('multiItems').innerHTML = multiItems
+        .map(item => 
+          `Width: ${item.width}cm, Height: ${item.height}cm, Quantity: ${item.quantity}, 
+          <strong>Price: EGP ${item.totalPrice.toFixed(2)}</strong>`
+        )
+        .join('<br>');
+
+      // Clear inputs
+      document.getElementById('multiWidth').value = '';
+      document.getElementById('multiHeight').value = '';
+      document.getElementById('multiQuantity').value = '';
+    }
+
+
+    // Calculate Total Price for multiple items
+    function calculateMultiItems() {
+      let totalPrice = 0;
+      multiItems.forEach(item => {
+        const area = item.width * item.height;
+        totalPrice += area * item.quantity * pricePerCm2;
+      });
+      document.getElementById('multiResult').innerText = `Total Price for all items: EGP ${totalPrice.toFixed(2)}`;
+    }
+
+    // Toggle dark/light mode
+    function toggleMode() {
+      document.body.classList.toggle('light');
+    }
+
+     // unlockSettings
+     function unlockSettings() {
+        const password = document.getElementById('settingsPassword').value;
+        const correctPassword = "admin123"; // Change this to your desired password
+
+        if (password === correctPassword) {
+        document.getElementById('settingsLock').style.display = 'none';
+        document.getElementById('settingsPage').style.display = 'block';
+        } else {
+        document.getElementById('passwordMessage').textContent = 'Incorrect password. Try again.';
+        }
+    }
+
+
+    // Calculate price per cm for base setting
+    function calculatePricePerCm() {
+        const refWidth = parseFloat(document.getElementById('refWidth').value);
+        const refHeight = parseFloat(document.getElementById('refHeight').value);
+        const refPrice = parseFloat(document.getElementById('refPrice').value);
+    
+        if (isNaN(refWidth) || isNaN(refHeight) || isNaN(refPrice)) {
+        document.getElementById('settingsResult').innerText = "Please enter valid numbers.";
+        return;
+        }
+    
+        // Calculate price per cm²
+        pricePerCm2 = refPrice / (refWidth * refHeight);
+        
+        // ✅ Save to localStorage
+        localStorage.setItem('pricePerCm2', pricePerCm2);
+
+        // Display the results (New Price, Width, Height)
+        document.getElementById('settingsResult').innerHTML = `
+        <strong>New Price per cm²</strong>: EGP ${pricePerCm2.toFixed(4)}<br>
+        <strong>Width</strong>: ${refWidth} cm<br>
+        <strong>Height</strong>: ${refHeight} cm<br>
+        <strong>Total Price</strong>: EGP ${refPrice.toFixed(2)}
+        `;
+    }
+    function loadSettings() {
+    const savedWidth = localStorage.getItem('refWidth');
+    const savedHeight = localStorage.getItem('refHeight');
+    const savedPrice = localStorage.getItem('refPrice');
+
+    if (savedWidth !== null) document.getElementById('refWidth').value = savedWidth;
+    if (savedHeight !== null) document.getElementById('refHeight').value = savedHeight;
+    if (savedPrice !== null) document.getElementById('refPrice').value = savedPrice;
+
+    // Update display after loading saved values
+    updatePriceInfo();
+  }
+
+  window.addEventListener('DOMContentLoaded', loadSettings);
+
+      
+/*
+  // Print the invoice
+  function printInvoice(resultId) {
+      const printContent = document.getElementById(resultId).innerHTML;
+      const printWindow = window.open('', '', 'height=500,width=800');
+      printWindow.document.write('<html><head><title>Invoice</title></head><body>');
+      printWindow.document.write(printContent);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
+  }
+
+
+
+    function printInvoice(divId) {
+        const originalContent = document.body.innerHTML;
+        const printSection = document.querySelector('.section-box').innerHTML;
+      
+        document.body.innerHTML = `
+          <html>
+          <head>
+            <title>Invoice</title>
+          </head>
+          <body>${printSection}</body>
+          </html>
+        `;
+      
+        window.print();
+        document.body.innerHTML = originalContent;
+        location.reload(); // Optional: reload to restore the app after print
+      }
+*/
+
+
+  async function exportPaperPriceToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Find visible page by checking display style exactly
+    const visiblePage = Array.from(document.querySelectorAll('.content'))
+      .find(el => window.getComputedStyle(el).display !== 'none');
+
+    if (!visiblePage) {
+      alert("No visible section found.");
+      return;
+    }
+
+    // Find .section-box inside visiblePage or fallback to visiblePage itself
+    const section = visiblePage.querySelector('.section-box') || visiblePage;
+
+    // Scroll into view to make sure visible for html2canvas
+    section.scrollIntoView();
+
+    let content = "";
+
+    if (visiblePage.id === "paper-pricePage") {
+      const width = parseFloat(document.getElementById('width').value) || 0;
+      const height = parseFloat(document.getElementById('height').value) || 0;
+      const quantity = parseInt(document.getElementById('quantity').value) || 0;
+
+      const area = width * height;
+      const totalArea = area * quantity;
+      const pricePerCm2 = 80 / 600;
+      const totalPrice = (totalArea * pricePerCm2).toFixed(2);
+
+      content = `
+  Paper Price Invoice
+  -------------------------
+  Width: ${width} cm
+  Height: ${height} cm
+  Quantity: ${quantity}
+  Total Area: ${totalArea} cm²
+  Total Price: EGP ${totalPrice}
+      `;
+
+    } else if (visiblePage.id === "base-sheetPage") {
+      const baseWidth = parseFloat(document.getElementById('baseWidth').value) || 0;
+      const baseHeight = parseFloat(document.getElementById('baseHeight').value) || 0;
+      const gutter = parseFloat(document.getElementById('gutter').value) || 0;
+      const pieceWidth = parseFloat(document.getElementById('pieceWidth').value) || 0;
+      const pieceHeight = parseFloat(document.getElementById('pieceHeight').value) || 0;
+
+      const usableWidth = baseWidth + gutter;
+      const usableHeight = baseHeight + gutter;
+      const pieceTotalWidth = pieceWidth + gutter;
+      const pieceTotalHeight = pieceHeight + gutter;
+
+      const columns = Math.floor(usableWidth / pieceTotalWidth);
+      const rows = Math.floor(usableHeight / pieceTotalHeight);
+      const totalPieces = rows * columns;
+
+      content = `
+  Base Sheet Calculation
+  -------------------------
+  Base Sheet: ${baseWidth} x ${baseHeight} cm
+  Gutter: ${gutter} cm
+  Piece Size: ${pieceWidth} x ${pieceHeight} cm
+  Columns: ${columns}
+  Rows: ${rows}
+  Total Pieces Per Sheet: ${totalPieces}
+      `;
+
+  } else if (visiblePage.id === "multi-itemPage") {
+    const items = document.querySelectorAll("#multiItems .multi-item");
+    console.log("Multi items found:", items.length);
+
+    if (items.length === 0) {
+      content = "No items to display.";
+    } else {
+      let grandTotal = 0;
+      content = `Multi-item Invoice\n-------------------------\n`;
+
+      items.forEach((item, index) => {
+        const w = parseFloat(item.getAttribute("data-width")) || 0;
+        const h = parseFloat(item.getAttribute("data-height")) || 0;
+        const q = parseInt(item.getAttribute("data-quantity")) || 0;
+        console.log(`Item ${index + 1}`, {w, h, q});
+
+        const area = w * h;
+        const totalArea = area * q;
+        const pricePerCm2 = 80 / 600;
+        const price = (totalArea * pricePerCm2).toFixed(2);
+        grandTotal += parseFloat(price);
+
+        content += `
+  Item ${index + 1}
+  Width: ${w} cm, Height: ${h} cm
+  Quantity: ${q}
+  Total Area: ${totalArea} cm²
+  Total Price: EGP ${price}\n`;
+      });
+
+      content += `\n-------------------------\nTotal Price: EGP ${grandTotal.toFixed(2)}`;
+    }
+  }
+
+
+  // Add text content to PDF
+  const lines = doc.splitTextToSize(content, 180);
+  doc.text(lines, 10, 20);
+
+  try {
+    // Pass options to html2canvas to improve capture
+    const canvas = await html2canvas(section, {
+      scale: 2,
+      useCORS: true,
+      logging: true
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const targetWidth = pdfWidth - 100;
+    const aspectRatio = canvas.height / canvas.width;
+    const targetHeight = targetWidth * aspectRatio;
+
+    doc.addImage(imgData, 'PNG', 10, 60, targetWidth, targetHeight);
+    doc.save("invoice.pdf");
+  } catch (err) {
+    console.error("Error capturing canvas:", err);
+    alert("Failed to capture screenshot.");
+  }
+}
+
+
+/*
+// Disable right-click
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+       
+        // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, and Ctrl+U
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' || // F12 key
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || // Ctrl+Shift+I or Ctrl+Shift+J
+                (e.ctrlKey && e.key === 'U') // Ctrl+U
+            ) {
+                e.preventDefault();
+                alert("Developer tools detected! Closing the page.");
+                redirectToBlank();
+            }
+        });
+
+        // Function to redirect to blank page and prevent going back
+        function redirectToBlank() {
+            window.location.replace("about:blank"); // Replace current history entry
+        }
+
+        (function detectDevTools() {
+            let devtoolsOpen = false;
+
+            // Detect using window.outerWidth and window.outerHeight
+            function checkWindowSize() {
+                const threshold = 160; // Height difference when DevTools are open
+                if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+                    devtoolsOpen = true;
+                }
+            }
+
+            // Detect using console.log behavior
+            function checkConsoleBehavior() {
+                const element = new Image();
+                Object.defineProperty(element, 'id', {
+                    get: function () {
+                        devtoolsOpen = true;
+                        // Trigger action immediately
+                        alert("Developer tools detected! Closing the page.");
+                        redirectToBlank();
+                    }
+                });
+                console.log(element);
+            }
+
+            // Monitor for Developer Tools
+            function monitorDevTools() {
+                devtoolsOpen = false;
+                checkWindowSize();
+
+                if (devtoolsOpen) {
+                    alert("Developer tools detected! Closing the page.");
+                    redirectToBlank(); // Redirect to blank page
+                } else {
+                    checkConsoleBehavior();
+                }
+            }
+
+            // Run detection every 100ms for faster response
+            setInterval(monitorDevTools, 100);
+        })();
+        */
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</body>
+</html>
