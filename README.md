@@ -74,6 +74,93 @@ You can install the Paper Price Calculator app directly to your device and use i
 
 ---
 
+## 🧾 1. Paper Price Page
+
+Calculate the total price for a paper piece based on its **width**, **height**, and **quantity**. The result is calculated using your defined price per cm².
+
+**Key Features:**
+- Calculates area and total price.
+- Allows PDF export of invoice.
+
+![Paper Price Page](screenshots/paper-price.png)
+
+---
+
+## 📐 2. Base Sheet Page
+
+Find out how many small pieces can fit on a larger base sheet, taking into account gutters/spaces. It calculates **used area**, **waste area**, and estimated total price.
+
+**Key Features:**
+- Layout simulation with gutters.
+- Accurate material optimization.
+- Price calculation and invoice export.
+
+![Base Sheet Page](screenshots/base-sheet.png)
+
+---
+
+## 📋 3. Multi-Item Page
+
+Add multiple items of varying sizes and quantities to calculate a **combined total price**. Ideal for bulk orders.
+
+**Key Features:**
+- Tracks multiple item entries.
+- Calculates individual and total costs.
+- PDF export support.
+
+![Multi-item Page](screenshots/multi-item.png)
+
+---
+
+## 🎨 4. Theme Page
+
+Easily toggle between **light and dark mode** to enhance your visual experience.
+
+**Key Features:**
+- Smooth theme switching.
+- Saves preference locally.
+
+![Theme Page](screenshots/settings-theme.png)
+
+---
+
+## ⚙️ 5. Settings Page
+
+Set your own **reference price** per cm² based on a known sheet size and total price. This sets the foundation for accurate calculations across all other pages.
+
+**Key Features:**
+- Customizable width, height, and price.
+- Saves data to local storage.
+- Real-time price per cm² update.
+
+![Settings Page](screenshots/settings.png)
+
+---
+
+## 📨 6. Content (Contact Page)
+
+Users can send inquiries or feedback directly through a **Web3Forms-powered** contact form.
+
+**Key Features:**
+- Full name, email, phone, subject, and message fields.
+- Submission feedback and form reset.
+
+![Contact Page](screenshots/contact.png)
+
+---
+
+## 📥 7. Download Page
+
+Guides users through the process of installing the app on their mobile home screen for **offline use**.
+
+**Key Features:**
+- iOS-specific and Android-specific install instructions.
+- Designed to improve accessibility and UX.
+
+![Download Page](screenshots/download.png)
+
+---
+
 ## 🛠 Installation (For Developers)
 
 To run the project locally or customize it:
