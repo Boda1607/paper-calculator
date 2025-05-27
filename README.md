@@ -82,7 +82,7 @@ Calculate the total price for a paper piece based on its **width**, **height**, 
 - Calculates area and total price.
 - Allows PDF export of invoice.
 
-![Paper Price Page](screenshots/paper-price.png)
+![Paper Price Page](Paper%20Price%20Calculator/screenshots/paper-price.png)
 
 ---
 
@@ -108,7 +108,7 @@ Add multiple items of varying sizes and quantities to calculate a **combined tot
 - Calculates individual and total costs.
 - PDF export support.
 
-![Multi-item Page](screenshots/multi-item.png)
+![Multi-item Page](Paper%20Price%20Calculator/screenshots/multi-item.png)
 
 ---
 
@@ -133,7 +133,7 @@ Set your own **reference price** per cm² based on a known sheet size and total 
 - Saves data to local storage.
 - Real-time price per cm² update.
 
-![Settings Page](screenshots/settings.png)
+![Settings Page](Paper%20Price%20Calculator/screenshots/settings.png)
 
 ---
 
@@ -145,7 +145,7 @@ Users can send inquiries or feedback directly through a **Web3Forms-powered** co
 - Full name, email, phone, subject, and message fields.
 - Submission feedback and form reset.
 
-![Contact Page](screenshots/contact.png)
+![Contact Page](Paper%20Price%20Calculator/screenshots/contact.png)
 
 ---
 
@@ -157,7 +157,7 @@ Guides users through the process of installing the app on their mobile home scre
 - iOS-specific and Android-specific install instructions.
 - Designed to improve accessibility and UX.
 
-![Download Page](screenshots/download.png)
+![Download Page](Paper%20Price%20Calculator/screenshots/download.png)
 
 ---
 
