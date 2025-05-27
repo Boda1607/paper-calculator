@@ -1,4 +1,4 @@
-# paper-calculator-
+# paper-calculator
 A lightweight and installable Progressive Web App that helps users calculate the cost of paper based on custom dimensions, sheet layouts, and multi-item orders. Includes a theme switcher, PDF invoice export, and settings to define custom pricing. Ideal for print shops, designers, and paper product businesses.
 # 📄 Paper Price Calculator (PWA)
 
@@ -120,7 +120,7 @@ Easily toggle between **light and dark mode** to enhance your visual experience.
 - Smooth theme switching.
 - Saves preference locally.
 
-![Theme Page](screenshots/settings-theme.png)
+![Theme Page](Paper-Price-Calculator/screenshots/settings-theme.png)
 
 ---
 
