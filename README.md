@@ -95,7 +95,7 @@ Find out how many small pieces can fit on a larger base sheet, taking into accou
 - Accurate material optimization.
 - Price calculation and invoice export.
 
-![Base Sheet Page](screenshots/base-sheet.png)
+![Base Sheet Page](Paper%20Price%20Calculator/screenshots/base-sheet.png)
 
 ---
 
