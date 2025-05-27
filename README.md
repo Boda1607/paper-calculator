@@ -2,39 +2,77 @@
 A lightweight and installable Progressive Web App that helps users calculate the cost of paper based on custom dimensions, sheet layouts, and multi-item orders. Includes a theme switcher, PDF invoice export, and settings to define custom pricing. Ideal for print shops, designers, and paper product businesses.
 # 📄 Paper Price Calculator (PWA)
 
-A Progressive Web App (PWA) built to calculate paper prices, base sheet layouts, and multiple custom item costs with support for dark/light themes, PDF export, and offline usage. Perfect for printing businesses and designers.
+**Paper Price Calculator** is a fully responsive **Progressive Web App (PWA)** designed for printing businesses, designers, and paper suppliers. This tool simplifies the process of calculating paper costs based on custom sizes and quantities, helps optimize sheet layouts, and supports multiple items in one order. With light/dark theme support, offline functionality, and PDF invoice generation, it's your go-to solution for managing paper pricing efficiently.
+
+---
 
 ## 🚀 Features
 
-- ✅ **Paper Price Calculator** — Calculates cost based on dimensions and quantity.
-- ✅ **Base Sheet Optimizer** — Helps optimize how many pieces fit per base sheet.
-- ✅ **Multi-Item Calculation** — Add multiple items and calculate total cost.
-- ✅ **PDF Invoice Export** — Generate printable invoices directly from the browser.
-- ✅ **Theme Switcher** — Toggle between dark and light modes.
-- ✅ **PWA Support** — Installable on mobile and desktop with offline access.
-- ✅ **Settings** — Set custom price per cm² based on reference dimensions and price.
-- ✅ **Responsive UI** — Mobile-friendly and supports standalone fullscreen display.
-- ✅ **Contact Form** — Direct email contact via Web3Forms integration.
+- ✅ **Paper Price Calculator** – Calculates price based on width, height, and quantity.
+- ✅ **Base Sheet Optimizer** – Determines how many pieces fit on a base sheet, considering gutters.
+- ✅ **Multi-Item Calculation** – Add multiple items with custom dimensions and quantities.
+- ✅ **PDF Invoice Export** – Generate printable PDF invoices for each calculation.
+- ✅ **Theme Switcher** – Easily switch between light and dark modes.
+- ✅ **PWA Support** – Fully installable on mobile or desktop with offline access.
+- ✅ **Custom Pricing** – Set and save your own price per cm² from reference dimensions and price.
+- ✅ **Responsive Design** – Works seamlessly across all screen sizes.
+- ✅ **Contact Form** – Built-in form using Web3Forms for sending messages directly.
+
+---
 
 ## 📦 Technologies Used
 
-- HTML5, CSS3, JavaScript (Vanilla)
-- [jsPDF]for PDF generation
-- [html2canvas]for DOM rendering
-- Web3Forms API for contact submissions
-- PWA Manifest & Service Worker support
+- **HTML5, CSS3, JavaScript (Vanilla)**
+- [`jsPDF`](https://github.com/parallax/jsPDF) – for PDF generation
+- [`html2canvas`](https://github.com/niklasvh/html2canvas) – for screenshot rendering into PDF
+- **Web3Forms API** – for handling contact form submissions
+- **Web App Manifest** – for enabling PWA install capabilities
+- *(Optional)* Service Worker support (coming soon)
+
+---
 
 ## 🧮 How It Works
 
-- Set a base price per square centimeter via **Settings**.
-- Use the **Paper Price** page to calculate the total cost based on width, height, and quantity.
-- On **Base Sheet**, simulate sheet layout with gutters.
-- Add multiple items in **Multi-item** to get cumulative cost.
-- Use **Download** section for install instructions on iOS devices.
+### ➤ Step-by-step Workflow
 
-## 🛠 Installation
+1. **Set Your Base Price**  
+   Navigate to the **Settings** page and enter a reference width, height, and total price. The app will calculate price per cm² and save it for future use.
 
-1. Clone the repository:
+2. **Calculate Paper Price**  
+   Input the width, height, and quantity of your item in the **Paper Price** section. The app computes total area and pricing, and lets you export an invoice as PDF.
+
+3. **Optimize Base Sheet Layout**  
+   In the **Base Sheet** tab, input the full sheet size, gutter spacing, and piece size. It calculates how many pieces fit, used area, waste area, and total cost.
+
+4. **Multi-Item Costing**  
+   Use the **Multi-item** section to add various sized items in bulk. You’ll get the total cost and a breakdown for each item.
+
+5. **Export & Install**  
+   Every result section offers a **Print Invoice** button. You can also install the app via the **Download** section following mobile instructions.
+
+---
+
+## 📱 How to Install
+
+### 📲 iOS (Safari)
+1. Open the site in Safari
+2. Tap the **Share** icon
+3. Select **Add to Home Screen**
+
+### 📲 Android (Chrome)
+1. Open the site in Chrome
+2. Tap the **Menu (⋮)** icon
+3. Choose **Add to Home Screen**
+
+Once added, it will behave like a native app.
+
+---
+
+## 🛠 Installation (For Developers)
+
+To run the project locally or customize it:
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/paper-price-calculator.git
