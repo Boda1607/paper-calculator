@@ -19,8 +19,8 @@ A Progressive Web App (PWA) built to calculate paper prices, base sheet layouts,
 ## 📦 Technologies Used
 
 - HTML5, CSS3, JavaScript (Vanilla)
-- [jsPDF](https://github.com/parallax/jsPDF) for PDF generation
-- [html2canvas](https://github.com/niklasvh/html2canvas) for DOM rendering
+- [jsPDF]for PDF generation
+- [html2canvas]for DOM rendering
 - Web3Forms API for contact submissions
 - PWA Manifest & Service Worker support
 
