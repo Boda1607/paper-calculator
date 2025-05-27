@@ -23,8 +23,8 @@ A lightweight and installable Progressive Web App that helps users calculate the
 ## 📦 Technologies Used
 
 - **HTML5, CSS3, JavaScript (Vanilla)**
-- [`jsPDF`](https://github.com/parallax/jsPDF) – for PDF generation
-- [`html2canvas`](https://github.com/niklasvh/html2canvas) – for screenshot rendering into PDF
+- [`jsPDF`]– for PDF generation
+- [`html2canvas`] – for screenshot rendering into PDF
 - **Web3Forms API** – for handling contact form submissions
 - **Web App Manifest** – for enabling PWA install capabilities
 - *(Optional)* Service Worker support (coming soon)
@@ -52,19 +52,25 @@ A lightweight and installable Progressive Web App that helps users calculate the
 
 ---
 
-## 📱 How to Install
+## 📱 How to Download the App on Mobile
+
+You can install the Paper Price Calculator app directly to your device and use it offline with the following steps:
 
 ### 📲 iOS (Safari)
-1. Open the site in Safari
-2. Tap the **Share** icon
-3. Select **Add to Home Screen**
+1. Open the app in **Safari**.
+2. Tap the **Share** icon (the square with an upward arrow).
+3. Scroll down and tap **Add to Home Screen**.
+4. Choose a name for the app, and tap **Add**.
+   
+   Once added, the app will appear on your home screen like a native app. It can be launched directly from there without needing to open Safari.
 
 ### 📲 Android (Chrome)
-1. Open the site in Chrome
-2. Tap the **Menu (⋮)** icon
-3. Choose **Add to Home Screen**
+1. Open the app in **Chrome**.
+2. Tap the **Menu (⋮)** icon in the top-right corner.
+3. Tap **Add to Home Screen**.
+4. Choose a name for the app, and tap **Add**.
 
-Once added, it will behave like a native app.
+   The app will be added to your home screen and can be accessed like a native app, even when offline.
 
 ---
 
